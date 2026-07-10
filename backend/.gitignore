@@ -1,0 +1,5 @@
+node_modules/
+bhejdo.db
+bhejdo.db-wal
+bhejdo.db-shm
+.env
