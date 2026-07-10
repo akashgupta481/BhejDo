@@ -1,0 +1,76 @@
+version: '3'
+
+vars:
+  BACKEND_DIR: backend
+  FRONTEND_DIR: frontend
+
+tasks:
+  default:
+    desc: Show available tasks
+    cmds:
+      - task --list
+
+  doctor:
+    desc: Check local runtime and project dependencies
+    cmds:
+      - node scripts/check-env.js
+
+  install:
+    desc: Install root, backend, and frontend dependencies
+    cmds:
+      - npm install
+
+  dev:
+    desc: Run backend and frontend together
+    deps: [doctor]
+    cmds:
+      - npm run dev
+
+  backend:
+    desc: Run the backend API
+    dir: '{{.BACKEND_DIR}}'
+    cmds:
+      - npm start
+
+  frontend:
+    desc: Run the frontend dev server
+    dir: '{{.FRONTEND_DIR}}'
+    cmds:
+      - npm run dev
+
+  build:
+    desc: Build the frontend production bundle
+    dir: '{{.FRONTEND_DIR}}'
+    cmds:
+      - npm run build
+
+  lint:
+    desc: Lint the frontend
+    dir: '{{.FRONTEND_DIR}}'
+    cmds:
+      - npm run lint
+
+  db:init:
+    desc: Initialize the backend SQLite database
+    dir: '{{.BACKEND_DIR}}'
+    cmds:
+      - npm run init-db
+
+  db:seed:
+    desc: Seed the backend SQLite database
+    dir: '{{.BACKEND_DIR}}'
+    cmds:
+      - npm run seed
+
+  clean:
+    desc: Remove generated dependencies and local database files
+    cmds:
+      - npm run clean
+
+  reset:
+    desc: Clean generated files, reinstall dependencies, and initialize data
+    cmds:
+      - task clean
+      - task install
+      - task db:init
+      - task db:seed
