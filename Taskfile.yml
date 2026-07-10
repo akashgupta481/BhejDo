@@ -74,3 +74,4 @@ tasks:
       - task install
       - task db:init
       - task db:seed
+      
