@@ -14,7 +14,3 @@ services:
         generateValue: true
       - key: PORT
         value: 3001
-    disk:
-      name: bhejdo-data
-      mountPath: /opt/render/project/src/backend
-      sizeGB: 1
