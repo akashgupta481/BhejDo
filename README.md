@@ -29,7 +29,6 @@ npm run install:all
 # Start both frontend and backend
 npm start
 ```
-
 - Frontend: http://localhost:5173
 - Backend API: http://localhost:3001
 
