@@ -150,7 +150,7 @@ router.patch('/:id/claim', authMiddleware, roleCheck('AGENT'), (req, res) => {
 });
 
 // PATCH /api/assignments/:id/pickup — mark picked up (agent)
-router.patch('/:id/pickup', authMiddleware, roleCheck('AGENT', 'TRAVELER', 'ADMIN'), (req, res) => {
+router.patch('/:id/pickup', authMiddleware, roleCheck('AGENT', 'TRAVELER', 'SENDER', 'ADMIN'), (req, res) => {
   try {
     const db = getDb();
     const assignment = db.prepare('SELECT * FROM assignments WHERE id = ?').get(req.params.id);
@@ -191,7 +191,7 @@ router.patch('/:id/pickup', authMiddleware, roleCheck('AGENT', 'TRAVELER', 'ADMI
 });
 
 // PATCH /api/assignments/:id/transit — mark in transit (legacy, kept for backward compat)
-router.patch('/:id/transit', authMiddleware, roleCheck('TRAVELER', 'AGENT', 'ADMIN'), (req, res) => {
+router.patch('/:id/transit', authMiddleware, roleCheck('TRAVELER', 'SENDER', 'AGENT', 'ADMIN'), (req, res) => {
   try {
     const db = getDb();
     const assignment = db.prepare('SELECT * FROM assignments WHERE id = ?').get(req.params.id);
@@ -315,7 +315,7 @@ router.patch('/:id/hand-to-traveler', authMiddleware, roleCheck('AGENT', 'ADMIN'
 });
 
 // PATCH /api/assignments/:id/confirm-received — traveler confirms receipt from agent
-router.patch('/:id/confirm-received', authMiddleware, roleCheck('TRAVELER', 'ADMIN'), (req, res) => {
+router.patch('/:id/confirm-received', authMiddleware, roleCheck('TRAVELER', 'SENDER', 'ADMIN'), (req, res) => {
   try {
     const db = getDb();
     const assignment = db.prepare('SELECT * FROM assignments WHERE id = ?').get(req.params.id);
@@ -389,7 +389,7 @@ router.patch('/:id/confirm-received', authMiddleware, roleCheck('TRAVELER', 'ADM
 });
 
 // PATCH /api/assignments/:id/reached — traveler marks they've reached destination city
-router.patch('/:id/reached', authMiddleware, roleCheck('TRAVELER'), (req, res) => {
+router.patch('/:id/reached', authMiddleware, roleCheck('TRAVELER', 'SENDER'), (req, res) => {
   try {
     const db = getDb();
     const assignment = db.prepare('SELECT * FROM assignments WHERE id = ?').get(req.params.id);
@@ -455,7 +455,7 @@ router.patch('/:id/reached', authMiddleware, roleCheck('TRAVELER'), (req, res) =
 });
 
 // PATCH /api/assignments/:id/deliver — mark delivered (verify OTP)
-router.patch('/:id/deliver', authMiddleware, roleCheck('TRAVELER', 'AGENT', 'ADMIN'), (req, res) => {
+router.patch('/:id/deliver', authMiddleware, roleCheck('TRAVELER', 'SENDER', 'AGENT', 'ADMIN'), (req, res) => {
   try {
     const { otp } = req.body;
     const db = getDb();

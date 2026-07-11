@@ -61,12 +61,15 @@ const SenderDashboard = () => {
               <p className="text-white/85 font-medium mb-1">👋 Namaste, {firstName}!</p>
               <h1 className="text-3xl sm:text-4xl font-bold font-display mb-2 drop-shadow-sm">Where are we sending today?</h1>
               <p className="text-white/90 mb-6">Track your shipments and manage deliveries — all in one happy place.</p>
-              <Link to="/shipment/create" onClick={(e) => {
-                const el = e.currentTarget; const c = document.createElement('span'); const d = Math.max(el.clientWidth, el.clientHeight); const r = el.getBoundingClientRect();
-                c.className = 'warm-ripple'; c.style.width = c.style.height = `${d}px`; c.style.left = `${e.clientX - r.left - d / 2}px`; c.style.top = `${e.clientY - r.top - d / 2}px`; el.appendChild(c); setTimeout(() => c.remove(), 600);
-              }} className="btn-cream sweep inline-flex items-center gap-2 px-6 py-3.5 rounded-full font-semibold">
-                <Plus className="w-5 h-5" /> Create New Shipment
-              </Link>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Link to="/shipment/create" className="btn-cream inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full font-semibold">
+                  <Plus className="w-5 h-5" /> Create New Shipment
+                </Link>
+                {/* Same account doubles as a traveler — jump to the traveler dashboard */}
+                <Link to="/dashboard/traveler" className="btn-forest sweep inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full font-semibold ring-2 ring-white/70">
+                  <Truck className="w-5 h-5" /> Become a Traveler
+                </Link>
+              </div>
             </div>
             <div className="relative hidden lg:block shrink-0">
               <ScooterCourier className="w-72" />

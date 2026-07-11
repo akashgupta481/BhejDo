@@ -61,9 +61,9 @@ export default function Signup() {
   const [serverError, setServerError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // One personal account = Send parcels AND travel to earn. Agent is separate.
   const roles: { value: SignupRole; label: string; desc: string }[] = [
-    { value: 'SENDER', label: 'Sender', desc: 'Send parcels' },
-    { value: 'TRAVELER', label: 'Traveler', desc: 'Earn money' },
+    { value: 'SENDER', label: 'Personal', desc: 'Send & travel' },
     { value: 'AGENT', label: 'Agent', desc: 'Handle pickups' },
   ];
 
@@ -230,7 +230,7 @@ export default function Signup() {
             </div>
 
             {/* Role Selection */}
-            <div className="grid grid-cols-3 rounded-xl bg-slate-100 p-1 mb-6">
+            <div className="grid grid-cols-2 rounded-xl bg-slate-100 p-1 mb-6">
               {roles.map((r) => (
                 <button
                   key={r.value}

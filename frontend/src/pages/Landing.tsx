@@ -164,8 +164,9 @@ const Landing = () => {
     return () => { hero.removeEventListener('mousemove', onMove); hero.removeEventListener('mouseleave', reset); cancelAnimationFrame(raf); };
   }, []);
 
-  const sendLink = !isAuthenticated ? '/login' : user?.role === 'TRAVELER' ? '/dashboard/traveler' : '/shipment/create';
-  const travelerLink = !isAuthenticated ? '/signup?role=traveler' : user?.role === 'TRAVELER' ? '/dashboard/traveler' : '/dashboard/sender';
+  const sendLink = !isAuthenticated ? '/login' : '/shipment/create';
+  // Every signed-in account can act as a traveler — switch straight to that dashboard.
+  const travelerLink = !isAuthenticated ? '/signup' : '/dashboard/traveler';
 
   const steps = [
     { icon: Package, tile: 'icon-tile-terra', title: 'Book a pickup', desc: 'Tell us what you\'re sending and where it\'s going. Takes under a minute.' },

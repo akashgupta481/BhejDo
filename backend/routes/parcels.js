@@ -25,7 +25,7 @@ function normalizeCity(city) {
 }
 
 // POST /api/parcels — create parcel (sender only)
-router.post('/', authMiddleware, roleCheck('SENDER'), (req, res) => {
+router.post('/', authMiddleware, roleCheck('SENDER', 'TRAVELER'), (req, res) => {
   try {
     const {
       receiver_name, receiver_phone, receiver_address, receiver_city,
@@ -184,7 +184,7 @@ router.get('/', authMiddleware, (req, res) => {
 });
 
 // GET /api/parcels/available — browse available parcels (for travelers)
-router.get('/available', authMiddleware, roleCheck('TRAVELER'), (req, res) => {
+router.get('/available', authMiddleware, roleCheck('TRAVELER', 'SENDER'), (req, res) => {
   try {
     const db = getDb();
     const { city, page = 1, limit = 20 } = req.query;
@@ -366,7 +366,7 @@ router.get('/:id', authMiddleware, (req, res) => {
 });
 
 // POST /api/parcels/:id/accept — traveler accepts a parcel directly
-router.post('/:id/accept', authMiddleware, roleCheck('TRAVELER'), (req, res) => {
+router.post('/:id/accept', authMiddleware, roleCheck('TRAVELER', 'SENDER'), (req, res) => {
   try {
     const db = getDb();
     const parcel = db.prepare('SELECT * FROM parcels WHERE id = ?').get(req.params.id);
@@ -379,6 +379,17 @@ router.post('/:id/accept', authMiddleware, roleCheck('TRAVELER'), (req, res) => 
       return res.status(400).json({ success: false, message: 'Parcel is not available for acceptance.' });
     }
 
+    // A user cannot accept (as traveler) a parcel they sent themselves.
+    if (parcel.sender_id === req.user.id) {
+      return res.status(400).json({ success: false, message: 'You cannot accept your own parcel.' });
+    }
+
+    // Traveler must upload a travel ticket image to accept the order.
+    const ticketImage = req.body && req.body.ticket_image;
+    if (!ticketImage || typeof ticketImage !== 'string') {
+      return res.status(400).json({ success: false, message: 'A travel ticket image is required to accept this order.' });
+    }
+
     // Don't auto-assign agents - let them claim the job themselves
     const traveler = db.prepare('SELECT id, name, phone, city FROM users WHERE id = ?').get(req.user.id);
     const sender = db.prepare('SELECT id, name, phone, address, city FROM users WHERE id = ?').get(parcel.sender_id);
@@ -386,12 +397,13 @@ router.post('/:id/accept', authMiddleware, roleCheck('TRAVELER'), (req, res) => 
     // Create assignment (no trip_id needed, no agents assigned yet)
     const assignmentId = uuidv4();
     db.prepare(`
-      INSERT INTO assignments (id, parcel_id, trip_id, traveler_id, agent_id, destination_agent_id, status)
-      VALUES (?, ?, NULL, ?, NULL, NULL, 'MATCHED')
+      INSERT INTO assignments (id, parcel_id, trip_id, traveler_id, agent_id, destination_agent_id, status, ticket_image)
+      VALUES (?, ?, NULL, ?, NULL, NULL, 'MATCHED', ?)
     `).run(
       assignmentId,
       parcel.id,
-      req.user.id
+      req.user.id,
+      ticketImage
     );
 
     // Update parcel status to MATCHED

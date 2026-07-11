@@ -7,7 +7,7 @@ const { roleCheck } = require('../middleware/roleCheck');
 const router = express.Router();
 
 // POST /api/trips — create trip (traveler only)
-router.post('/', authMiddleware, roleCheck('TRAVELER'), (req, res) => {
+router.post('/', authMiddleware, roleCheck('TRAVELER', 'SENDER'), (req, res) => {
   try {
     const { source_city, destination_city, travel_date, capacity } = req.body;
 
@@ -165,7 +165,7 @@ router.get('/available', authMiddleware, (req, res) => {
 });
 
 // PATCH /api/trips/:id — update trip
-router.patch('/:id', authMiddleware, roleCheck('TRAVELER'), (req, res) => {
+router.patch('/:id', authMiddleware, roleCheck('TRAVELER', 'SENDER'), (req, res) => {
   try {
     const db = getDb();
     const trip = db.prepare('SELECT * FROM trips WHERE id = ?').get(req.params.id);

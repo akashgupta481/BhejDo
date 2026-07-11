@@ -150,7 +150,7 @@ router.post('/assign', authMiddleware, roleCheck('SENDER', 'ADMIN'), (req, res) 
 });
 
 // POST /api/matching/accept — traveler accepts assignment
-router.post('/accept', authMiddleware, roleCheck('TRAVELER'), (req, res) => {
+router.post('/accept', authMiddleware, roleCheck('TRAVELER', 'SENDER'), (req, res) => {
   try {
     const { assignment_id } = req.body;
 
@@ -215,7 +215,7 @@ router.post('/accept', authMiddleware, roleCheck('TRAVELER'), (req, res) => {
 });
 
 // POST /api/matching/reject — traveler rejects assignment
-router.post('/reject', authMiddleware, roleCheck('TRAVELER'), (req, res) => {
+router.post('/reject', authMiddleware, roleCheck('TRAVELER', 'SENDER'), (req, res) => {
   try {
     const { assignment_id, reason } = req.body;
 
