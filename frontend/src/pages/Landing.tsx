@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { BhejDoLogo } from '../components/icons/BhejDoLogo';
-import { ScooterCourier, Parcel, Cloud, Pin, Drone, HappyCustomer } from '../components/illustrations/WarmArt';
+import { ScooterCourier, Parcel, Cloud, Pin, HappyCustomer } from '../components/illustrations/WarmArt';
 
 /* reveal-on-scroll (reveals in-viewport items immediately, observes the rest) */
 function useScrollReveal() {

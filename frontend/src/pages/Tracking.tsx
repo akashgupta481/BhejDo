@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Search, MapPin, Package, CheckCircle2, Circle, Clock, Loader2, AlertCircle, Truck, User } from 'lucide-react';
+import { Search, MapPin, CheckCircle2, Circle, Clock, Loader2, AlertCircle, Truck, User } from 'lucide-react';
 import api from '../lib/api';
-import { Parcel as ParcelArt, Pin, EmptyBox, Cloud } from '../components/illustrations/WarmArt';
+import { Parcel as ParcelArt, EmptyBox, Cloud } from '../components/illustrations/WarmArt';
 
 /* Animated illustrated route between two cities */
 function RouteMap({ from, to }: { from: string; to: string }) {
