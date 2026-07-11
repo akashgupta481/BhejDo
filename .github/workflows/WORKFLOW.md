@@ -134,6 +134,13 @@ Deploy PR Merge
 
 See `.github/workflows/SETUP.md` for setup instructions.
 
+### Vercel Configuration
+⚠️ **IMPORTANT**: Disable Vercel's automatic Git deployments to enforce the controlled release process.
+
+See `.github/workflows/VERCEL-SETUP.md` for instructions.
+
+Without this, Vercel will auto-deploy on every push to main, bypassing the Deploy PR gate.
+
 ## Example Flow
 
 ### Scenario 1: Merging a new feature
