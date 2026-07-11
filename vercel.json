@@ -1,4 +1,11 @@
 {
+  "git": {
+    "deploymentEnabled": false
+  },
+  "github": {
+    "silent": true
+  },
+  "ignoreCommand": "bash vercel-ignore-build.sh",
   "buildCommand": "cd frontend && npm install && npm run build",
   "outputDirectory": "frontend/dist",
   "installCommand": "npm install --prefix frontend",
