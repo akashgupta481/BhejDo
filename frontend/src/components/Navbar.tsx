@@ -76,7 +76,7 @@ export default function Navbar() {
           {/* Logo */}
           <Link to={isAuthenticated && user ? getDashboardRoute(user.role) : '/'} className="flex items-center gap-2 group">
             <BhejDoLogo className="h-8 w-8 group-hover:scale-110 transition-transform" />
-            <span className="text-xl font-bold gradient-text font-[family-name:var(--font-family-heading)]">BhejDo</span>
+            <span className="text-2xl font-bold text-slate-800 font-display">Bhej<span className="gradient-text">Do</span></span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -188,7 +188,7 @@ export default function Navbar() {
                 {/* Guest: Sign Up (outlined) */}
                 <Link
                   to="/signup"
-                  className="border border-indigo-600 text-indigo-600 hover:bg-indigo-50 px-5 py-2 rounded-lg font-medium transition-colors"
+                  className="btn-cream px-5 py-2 rounded-full font-semibold"
                 >
                   Sign Up
                 </Link>
@@ -196,7 +196,7 @@ export default function Navbar() {
                 {/* Guest: Login (filled) */}
                 <Link
                   to="/login"
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-lg font-medium transition-colors shadow-md shadow-indigo-200/50"
+                  className="btn-terra px-5 py-2 rounded-full font-semibold"
                 >
                   Login
                 </Link>

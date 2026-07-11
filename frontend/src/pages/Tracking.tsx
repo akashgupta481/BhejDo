@@ -2,6 +2,40 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Search, MapPin, Package, CheckCircle2, Circle, Clock, Loader2, AlertCircle, Truck, User } from 'lucide-react';
 import api from '../lib/api';
+import { Parcel as ParcelArt, Pin, EmptyBox, Cloud } from '../components/illustrations/WarmArt';
+
+/* Animated illustrated route between two cities */
+function RouteMap({ from, to }: { from: string; to: string }) {
+  const path = 'M60 150 C 150 60, 300 60, 380 120 S 520 200, 540 110';
+  return (
+    <div className="relative bg-gradient-to-b from-[#F3ECFF] to-[#FBEFE4] h-72 overflow-hidden">
+      <Cloud className="cloud-drift absolute top-6 left-12 w-20 opacity-80" />
+      <Cloud className="cloud-drift d-2 absolute top-12 right-16 w-14 opacity-70" />
+      <svg viewBox="0 0 600 240" className="absolute inset-0 w-full h-full">
+        {/* rolling hills */}
+        <path d="M0 200 Q150 170 300 195 T600 190 V240 H0 Z" fill="#EDE4FF" opacity="0.7" />
+        <path d="M0 215 Q150 195 320 210 T600 205 V240 H0 Z" fill="#E3D7FB" opacity="0.7" />
+        {/* dotted travelling route */}
+        <path d={path} fill="none" stroke="#7C3AED" strokeWidth="4" strokeLinecap="round" className="route-dash" />
+        {/* origin pin */}
+        <circle cx="60" cy="150" r="8" fill="#F97316" />
+        <circle cx="60" cy="150" r="8" fill="#F97316" className="ring-pulse" opacity="0.4" />
+        {/* destination flag */}
+        <g>
+          <circle cx="540" cy="110" r="8" fill="#7C3AED" />
+          <circle cx="540" cy="110" r="8" fill="#7C3AED" className="ring-pulse" opacity="0.4" />
+        </g>
+      </svg>
+      {/* moving parcel along the path */}
+      <div className="absolute top-0 left-0 w-9 move-along" style={{ offsetPath: `path('${path}')` } as React.CSSProperties}>
+        <ParcelArt face={false} />
+      </div>
+      {/* city labels */}
+      <div className="absolute left-8 bottom-6 text-sm font-semibold text-forest" style={{ color: '#F97316' }}>{from}</div>
+      <div className="absolute right-10 top-24 text-sm font-semibold" style={{ color: '#6D28D9' }}>{to}</div>
+    </div>
+  );
+}
 
 interface TrackingEvent {
   status: string;
@@ -141,22 +175,21 @@ export default function Tracking() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen warm-canvas">
       {/* Hero Section */}
       <div className="hero-gradient py-16 relative overflow-hidden">
-        <div className="absolute inset-0">
-          <div className="absolute -top-20 -right-20 w-64 h-64 bg-white/5 rounded-full blur-3xl"></div>
-          <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-orange-500/5 rounded-full blur-2xl"></div>
-        </div>
+        <div className="absolute inset-0 warm-dots opacity-25"></div>
+        <Cloud className="cloud-drift absolute top-8 left-16 w-24 opacity-80" />
+        <Cloud className="cloud-drift d-2 absolute top-20 right-24 w-16 opacity-70" />
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-white/10 backdrop-blur-sm flex items-center justify-center">
-            <Package className="w-8 h-8 text-white" />
+          <div className="w-16 h-16 mx-auto mb-4 bob-parcel">
+            <ParcelArt />
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-4 font-[family-name:var(--font-family-heading)]">
-            Track Your Parcel
+          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-4 font-display drop-shadow-sm">
+            Where's my parcel?
           </h1>
-          <p className="text-indigo-100 mb-8 text-lg">
-            Enter your tracking code to get real-time updates on your delivery
+          <p className="text-white/90 mb-8 text-lg">
+            Pop in your tracking code for live updates on your delivery.
           </p>
 
           {/* Search Input */}
@@ -216,7 +249,7 @@ export default function Tracking() {
         {result && !loading && (
           <div className="space-y-6">
             {/* Header Card */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <div className="soft-card p-6">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
                   <p className="text-sm text-gray-500 mb-1">Tracking Code</p>
@@ -253,7 +286,7 @@ export default function Tracking() {
             </div>
 
             {/* Status Timeline */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <div className="soft-card p-6">
               <h3 className="text-lg font-semibold text-gray-800 mb-6">Delivery Progress</h3>
               <div className="relative">
                 {STATUS_STEPS.map((step, index) => {
@@ -325,7 +358,7 @@ export default function Tracking() {
 
             {/* Current Handler */}
             {result.currentHandler && (
-              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <div className="soft-card p-6">
                 <h3 className="text-lg font-semibold text-gray-800 mb-4">Current Handler</h3>
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center">
@@ -343,28 +376,26 @@ export default function Tracking() {
               </div>
             )}
 
-            {/* Map Placeholder */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-              <div className="bg-gray-100 h-64 flex flex-col items-center justify-center">
-                <MapPin className="w-12 h-12 text-gray-400 mb-3" />
-                <p className="text-gray-500 font-medium">Live tracking map coming soon</p>
-                <p className="text-sm text-gray-400 mt-1">
-                  Real-time GPS tracking will be available here
-                </p>
+            {/* Animated illustrated route */}
+            <div className="soft-card overflow-hidden">
+              <div className="px-6 pt-5 pb-3 flex items-center gap-2">
+                <MapPin className="w-5 h-5 text-primary-500" />
+                <h3 className="text-lg font-semibold text-slate-800 font-display">On the road</h3>
               </div>
+              <RouteMap from={result.sender.city} to={result.receiver.city} />
             </div>
           </div>
         )}
 
         {/* Empty state when no search performed */}
         {!searched && !loading && (
-          <div className="text-center py-16">
-            <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-500">
-              Enter a tracking code above to get started
+          <div className="soft-card p-10 text-center flex flex-col items-center max-w-md mx-auto">
+            <EmptyBox className="w-48 mb-4" />
+            <h3 className="text-lg font-semibold text-slate-700 font-display">
+              Ready when you are
             </h3>
-            <p className="text-gray-400 mt-2">
-              You can find your tracking code in the confirmation email or SMS
+            <p className="text-slate-400 mt-2">
+              Enter a tracking code above — you'll find it in your confirmation email or SMS.
             </p>
           </div>
         )}

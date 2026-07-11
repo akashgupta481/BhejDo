@@ -136,6 +136,7 @@ const ParcelDetails = () => {
   const currentStepIndex = getCurrentStepIndex();
 
   return (
+    <div className="warm-canvas min-h-screen">
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header */}
       <div className="flex items-center gap-4 mb-6">
@@ -165,7 +166,7 @@ const ParcelDetails = () => {
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">
           {/* Status Timeline */}
-          <div className="bg-white rounded-xl border border-gray-200 p-6">
+          <div className="soft-card p-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-6">Delivery Progress</h2>
             {parcel.status === 'CANCELLED' ? (
               <div className="flex items-center gap-3 p-4 bg-red-50 rounded-lg">
@@ -215,7 +216,7 @@ const ParcelDetails = () => {
           </div>
 
           {/* Route Info */}
-          <div className="bg-white rounded-xl border border-gray-200 p-6">
+          <div className="soft-card p-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Route</h2>
             <div className="flex items-start gap-4">
               <div className="flex flex-col items-center">
@@ -239,7 +240,7 @@ const ParcelDetails = () => {
           </div>
 
           {/* Parcel Info */}
-          <div className="bg-white rounded-xl border border-gray-200 p-6">
+          <div className="soft-card p-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Parcel Information</h2>
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -304,7 +305,7 @@ const ParcelDetails = () => {
           )}
 
           {/* People Involved */}
-          <div className="bg-white rounded-xl border border-gray-200 p-5">
+          <div className="soft-card p-5">
             <h3 className="font-semibold text-gray-900 mb-4">People Involved</h3>
             <div className="space-y-4">
               <div className="flex items-start gap-3">
@@ -373,7 +374,7 @@ const ParcelDetails = () => {
 
           {/* Estimated Delivery */}
           {getEstimatedDelivery() && (
-            <div className="bg-white rounded-xl border border-gray-200 p-5">
+            <div className="soft-card p-5">
               <h3 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
                 <Clock className="w-4 h-4 text-indigo-600" />
                 Estimated Delivery
@@ -384,7 +385,7 @@ const ParcelDetails = () => {
           )}
 
           {/* Price */}
-          <div className="bg-white rounded-xl border border-gray-200 p-5">
+          <div className="soft-card p-5">
             <h3 className="font-semibold text-gray-900 mb-2">Estimated Price</h3>
             <p className="text-2xl font-bold text-indigo-600">₹{parcel.estimatedPrice}</p>
           </div>
@@ -398,7 +399,7 @@ const ParcelDetails = () => {
 
           {/* Delivery Photo Proof */}
           {(user?.role === 'TRAVELER' || user?.role === 'AGENT') && parcel.status !== 'DELIVERED' && parcel.status !== 'CANCELLED' && (
-            <div className="bg-white rounded-xl border border-gray-200 p-5">
+            <div className="soft-card p-5">
               <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
                 <Camera className="w-4 h-4 text-indigo-600" />
                 Delivery Photo Proof
@@ -479,6 +480,7 @@ const ParcelDetails = () => {
         parcelId={parcel.id}
         travelerName={parcel.traveler?.name}
       />
+    </div>
     </div>
   );
 };

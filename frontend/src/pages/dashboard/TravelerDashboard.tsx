@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { DollarSign, TrendingUp, Clock, MapPin, ArrowRight, Wallet, Filter, Package, CheckCircle, Navigation } from 'lucide-react';
+import { DollarSign, TrendingUp, Clock, MapPin, ArrowRight, Wallet, Filter, Package, CheckCircle, Navigation, Send, Ticket, Upload, X, Loader2 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../lib/api';
 import StatusBadge from '../../components/StatusBadge';
 import LoadingSpinner from '../../components/LoadingSpinner';
+import { ScooterCourier, Cloud, Parcel as ParcelArt, EmptyBox } from '../../components/illustrations/WarmArt';
 
 interface AvailableJob {
   id: string;
@@ -48,6 +49,9 @@ const TravelerDashboard = () => {
   const [acceptingId, setAcceptingId] = useState<string | null>(null);
   const [reachingId, setReachingId] = useState<string | null>(null);
   const [confirmingReceivedId, setConfirmingReceivedId] = useState<string | null>(null);
+  // Ticket-upload gate for accepting a job
+  const [acceptTarget, setAcceptTarget] = useState<AvailableJob | null>(null);
+  const [ticketImage, setTicketImage] = useState<string | null>(null);
 
   useEffect(() => {
     fetchData();
@@ -114,13 +118,26 @@ const TravelerDashboard = () => {
     }
   };
 
-  const handleAcceptJob = async (parcelId: string) => {
+  const handleTicketFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) { setError('Please upload an image of your ticket.'); return; }
+    if (file.size > 6 * 1024 * 1024) { setError('Ticket image must be under 6 MB.'); return; }
+    const reader = new FileReader();
+    reader.onloadend = () => setTicketImage(reader.result as string);
+    reader.readAsDataURL(file);
+  };
+
+  const closeAcceptModal = () => { setAcceptTarget(null); setTicketImage(null); };
+
+  const handleAcceptJob = async (parcelId: string, ticket: string) => {
     try {
       setAcceptingId(parcelId);
       setError('');
-      await api.post(`/parcels/${parcelId}/accept`);
+      await api.post(`/parcels/${parcelId}/accept`, { ticket_image: ticket });
       setSuccessMessage('Job accepted! Agent will be notified for pickup.');
       setAvailableJobs((prev) => prev.filter((j) => j.id !== parcelId));
+      closeAcceptModal();
       // Refresh active deliveries
       const assignmentsRes = await api.get('/assignments');
       const allAssignments = assignmentsRes.data.data?.assignments || [];
@@ -197,11 +214,27 @@ const TravelerDashboard = () => {
   if (loading) return <LoadingSpinner />;
 
   return (
+    <div className="warm-canvas min-h-screen">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 font-[family-name:var(--font-family-heading)]">Traveler Dashboard</h1>
-        <p className="text-slate-600 mt-1">Welcome back, {user?.name}. Browse available jobs or manage your active deliveries.</p>
+      {/* Playful welcome hero */}
+      <div className="hero-gradient rounded-[32px] p-8 sm:p-10 mb-8 text-white relative overflow-hidden">
+        <div className="absolute inset-0 warm-dots opacity-25" />
+        <Cloud className="cloud-drift absolute top-6 left-10 w-20 opacity-80 hidden sm:block" />
+        <div className="relative flex items-center justify-between gap-6">
+          <div>
+            <p className="text-white/85 font-medium mb-1">✈️ Ready to roll, {user?.name?.split(' ')[0]}?</p>
+            <h1 className="text-3xl sm:text-4xl font-bold font-display mb-2 drop-shadow-sm">Earn on the routes you already travel</h1>
+            <p className="text-white/90 max-w-lg mb-5">Browse jobs heading your way and manage your active deliveries.</p>
+            {/* Same account — hop back to sending anytime */}
+            <Link to="/dashboard/sender" className="btn-cream inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-semibold">
+              <Send className="w-4 h-4" /> Switch to Sending
+            </Link>
+          </div>
+          <div className="relative hidden lg:block shrink-0">
+            <ScooterCourier className="w-64" />
+            <div className="absolute -top-2 right-2 w-12 float-soft"><ParcelArt /></div>
+          </div>
+        </div>
       </div>
 
       {error && (
@@ -384,9 +417,10 @@ const TravelerDashboard = () => {
         </div>
 
         {filteredJobs.length === 0 ? (
-          <div className="bg-white rounded-xl border border-gray-200 p-8 text-center">
-            <MapPin className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-            <p className="text-gray-500">No available jobs right now. Check back later!</p>
+          <div className="soft-card p-10 text-center flex flex-col items-center">
+            <EmptyBox className="w-40 mb-4" />
+            <p className="text-slate-600 font-medium">No jobs on your route right now</p>
+            <p className="text-slate-400 text-sm mt-1">New parcels appear here the moment they're posted — check back soon!</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -420,11 +454,12 @@ const TravelerDashboard = () => {
                   )}
                 </div>
                 <button
-                  onClick={() => handleAcceptJob(job.id)}
+                  onClick={() => { setError(''); setTicketImage(null); setAcceptTarget(job); }}
                   disabled={acceptingId === job.id}
-                  className="btn-press w-full py-2.5 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-medium rounded-lg hover:from-emerald-600 hover:to-emerald-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+                  className="btn-forest w-full py-2.5 rounded-full font-semibold inline-flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {acceptingId === job.id ? 'Accepting...' : 'Accept Job'}
+                  <Ticket className="w-4 h-4" />
+                  {acceptingId === job.id ? 'Accepting...' : 'Accept with Ticket'}
                 </button>
               </div>
             ))}
@@ -433,21 +468,71 @@ const TravelerDashboard = () => {
       </div>
 
       {/* Wallet Quick View */}
-      <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl p-5 text-white">
-        <div className="flex items-center justify-between">
+      <div className="hero-gradient rounded-[28px] p-6 text-white relative overflow-hidden">
+        <div className="absolute inset-0 warm-dots opacity-20" />
+        <div className="relative flex items-center justify-between">
           <div>
-            <p className="text-indigo-200 text-sm">Wallet Balance</p>
-            <p className="text-2xl font-bold mt-1">&#8377;{(user?.wallet_balance ?? user?.walletBalance ?? 0).toLocaleString()}</p>
+            <p className="text-white/80 text-sm">Wallet Balance</p>
+            <p className="text-3xl font-bold font-display mt-1">&#8377;{(user?.wallet_balance ?? user?.walletBalance ?? 0).toLocaleString()}</p>
           </div>
           <Link
             to="/wallet"
-            className="flex items-center gap-2 px-4 py-2 bg-white/20 rounded-lg hover:bg-white/30 transition-colors text-sm font-medium"
+            className="btn-cream flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold"
           >
             <Wallet className="w-4 h-4" />
             View Wallet
           </Link>
         </div>
       </div>
+    </div>
+
+    {/* Accept-with-ticket modal */}
+    {acceptTarget && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={() => acceptingId ? null : closeAcceptModal()} />
+        <div className="relative soft-card w-full max-w-md p-6 animate-scale-in">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <div className="icon-tile icon-tile-terra w-10 h-10 flex items-center justify-center"><Ticket className="w-5 h-5" /></div>
+              <h3 className="text-lg font-bold text-slate-800 font-display">Upload your travel ticket</h3>
+            </div>
+            <button onClick={closeAcceptModal} className="text-slate-400 hover:text-slate-600 p-1"><X className="w-5 h-5" /></button>
+          </div>
+          <p className="text-sm text-slate-500 mb-4">
+            To accept <span className="font-semibold text-slate-700">{acceptTarget.pickupCity} → {acceptTarget.destinationCity}</span>, please upload a photo of your travel ticket (flight, train or bus) as proof of your journey.
+          </p>
+
+          {ticketImage ? (
+            <div className="relative mb-4">
+              <img src={ticketImage} alt="Ticket preview" className="w-full h-48 object-cover rounded-2xl border border-[#EDE7FA]" />
+              <button onClick={() => setTicketImage(null)} className="absolute top-2 right-2 bg-white/90 rounded-full p-1.5 shadow hover:bg-white">
+                <X className="w-4 h-4 text-slate-600" />
+              </button>
+              <p className="text-xs text-emerald-600 font-medium flex items-center gap-1 mt-2"><CheckCircle className="w-3.5 h-3.5" /> Ticket ready</p>
+            </div>
+          ) : (
+            <label className="flex flex-col items-center justify-center gap-2 px-4 py-8 mb-4 border-2 border-dashed border-primary-200 rounded-2xl cursor-pointer hover:bg-primary-50/40 transition-colors text-center">
+              <Upload className="w-7 h-7 text-primary-500" />
+              <span className="text-sm font-medium text-primary-600">Tap to upload ticket image</span>
+              <span className="text-xs text-slate-400">JPG / PNG, up to 6 MB</span>
+              <input type="file" accept="image/*" onChange={handleTicketFile} className="hidden" />
+            </label>
+          )}
+
+          <div className="flex gap-3">
+            <button onClick={closeAcceptModal} className="btn-cream flex-1 py-2.5 rounded-full font-semibold">Cancel</button>
+            <button
+              onClick={() => ticketImage && handleAcceptJob(acceptTarget.id, ticketImage)}
+              disabled={!ticketImage || acceptingId === acceptTarget.id}
+              className="btn-forest flex-1 py-2.5 rounded-full font-semibold inline-flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {acceptingId === acceptTarget.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4" />}
+              {acceptingId === acceptTarget.id ? 'Accepting…' : 'Confirm & Accept'}
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
     </div>
   );
 };

@@ -21,10 +21,11 @@ import Messages from './pages/Messages';
 function AppLayout() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith('/admin');
+  const isLandingRoute = location.pathname === '/';
 
   return (
     <div className="min-h-screen bg-slate-50">
-      {!isAdminRoute && <Navbar />}
+      {!isAdminRoute && !isLandingRoute && <Navbar />}
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
@@ -37,20 +38,15 @@ function AppLayout() {
         <Route path="/admin" element={<AdminPanel />} />
         <Route path="/admin/*" element={<AdminPanel />} />
 
-        <Route element={<ProtectedRoute allowedRoles={['SENDER']} />}>
+        {/* A regular account is Sender + Traveler in one — both dashboards are shared */}
+        <Route element={<ProtectedRoute allowedRoles={['SENDER', 'TRAVELER']} />}>
           <Route path="/dashboard/sender" element={<SenderDashboard />} />
-        </Route>
-
-        <Route element={<ProtectedRoute allowedRoles={['TRAVELER']} />}>
           <Route path="/dashboard/traveler" element={<TravelerDashboard />} />
+          <Route path="/shipment/create" element={<CreateShipment />} />
         </Route>
 
         <Route element={<ProtectedRoute allowedRoles={['AGENT']} />}>
           <Route path="/dashboard/agent" element={<AgentDashboard />} />
-        </Route>
-
-        <Route element={<ProtectedRoute allowedRoles={['SENDER']} />}>
-          <Route path="/shipment/create" element={<CreateShipment />} />
         </Route>
 
         <Route element={<ProtectedRoute allowedRoles={['SENDER', 'TRAVELER', 'AGENT', 'ADMIN']} />}>

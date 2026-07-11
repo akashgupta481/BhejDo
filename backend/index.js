@@ -19,6 +19,7 @@ try {
   try { db.exec('ALTER TABLE assignments ADD COLUMN agent_handed INTEGER DEFAULT 0'); } catch (e) { /* column may already exist */ }
   try { db.exec('ALTER TABLE assignments ADD COLUMN traveler_received INTEGER DEFAULT 0'); } catch (e) { /* column may already exist */ }
   try { db.exec('ALTER TABLE assignments ADD COLUMN agent_handed_at TEXT'); } catch (e) { /* column may already exist */ }
+  try { db.exec('ALTER TABLE assignments ADD COLUMN ticket_image TEXT'); } catch (e) { /* column may already exist */ }
   console.log('Handoff columns migration checked.');
 } catch (e) {
   console.error('Migration error:', e.message);
@@ -36,8 +37,8 @@ app.use(cors({
   ],
   credentials: true
 }));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '8mb' }));
+app.use(express.urlencoded({ extended: true, limit: '8mb' }));
 
 // Request logging
 app.use((req, res, next) => {

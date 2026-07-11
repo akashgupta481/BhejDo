@@ -23,22 +23,23 @@ function getTrendIndicator(trend: Trend) {
   }
 }
 
+const TILES = ['icon-tile-terra', 'icon-tile-forest', 'icon-tile-mustard', 'icon-tile-olive'];
+
 export default function StatsCard({ title, value, icon: Icon, trend, className = '' }: StatsCardProps) {
+  // Pick a stable tile colour from the title so a row of cards looks varied.
+  const tile = TILES[Math.abs(Array.from(title).reduce((a, c) => a + c.charCodeAt(0), 0)) % TILES.length];
   return (
-    <div className={`bg-white rounded-xl shadow-sm border border-gray-100 p-6 card-hover group ${className}`}>
+    <div className={`soft-card p-6 group ${className}`}>
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm font-medium text-slate-500">{title}</p>
           <div className="flex items-center gap-2 mt-2">
-            <p className="text-2xl font-bold text-slate-900 font-[family-name:var(--font-family-heading)]">{value}</p>
+            <p className="text-3xl font-bold text-slate-900 font-display">{value}</p>
             {trend && getTrendIndicator(trend)}
           </div>
         </div>
-        <div className="relative">
-          <div className="absolute inset-0 bg-indigo-200/50 rounded-xl blur-md group-hover:blur-lg transition-all"></div>
-          <div className="relative p-3 bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-xl group-hover:scale-110 transition-transform">
-            <Icon className="h-6 w-6 text-indigo-600" />
-          </div>
+        <div className={`icon-tile ${tile} p-3.5 group-hover:scale-110 group-hover:-rotate-3 transition-transform`}>
+          <Icon className="h-6 w-6" />
         </div>
       </div>
     </div>
