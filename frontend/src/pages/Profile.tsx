@@ -71,27 +71,43 @@ const Profile = () => {
   if (!user) return null;
 
   return (
+    <div className="warm-canvas min-h-screen">
     <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in-up">
-      <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-8 font-[family-name:var(--font-family-heading)]">
+      <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-8 font-display">
         My Profile
       </h1>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">{error}</div>
+        <div className="soft-card border-l-4 border-l-red-500 text-red-700 px-5 py-4 mb-6">{error}</div>
       )}
       {success && (
-        <div className="bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-3 rounded-lg mb-6">{success}</div>
+        <div className="soft-card border-l-4 border-l-emerald-500 text-emerald-700 px-5 py-4 mb-6">{success}</div>
       )}
 
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+      {/* Achievement badges */}
+      <div className="grid grid-cols-3 gap-3 mb-6">
+        {[
+          { tile: 'icon-tile-mustard', icon: Shield, label: 'Verified' },
+          { tile: 'icon-tile-forest', icon: MapPin, label: 'Explorer' },
+          { tile: 'icon-tile-terra', icon: User, label: 'Trusted' },
+        ].map((b) => (
+          <div key={b.label} className="soft-card p-4 flex flex-col items-center gap-2 text-center">
+            <div className={`icon-tile ${b.tile} w-12 h-12 flex items-center justify-center`}><b.icon className="w-6 h-6" /></div>
+            <span className="text-xs font-semibold text-slate-600">{b.label}</span>
+          </div>
+        ))}
+      </div>
+
+      <div className="soft-card overflow-hidden">
         {/* Header with avatar */}
-        <div className="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-8 flex items-center gap-5">
-          <div className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm border-2 border-white/50 flex items-center justify-center text-white text-2xl font-bold">
+        <div className="hero-gradient px-6 py-8 flex items-center gap-5 relative overflow-hidden">
+          <div className="absolute inset-0 warm-dots opacity-20" />
+          <div className="relative w-20 h-20 rounded-full bg-white/25 backdrop-blur-sm border-2 border-white/60 flex items-center justify-center text-white text-2xl font-bold font-display">
             {getInitials(user.name)}
           </div>
-          <div>
-            <h2 className="text-xl font-bold text-white">{user.name}</h2>
-            <p className="text-indigo-200 text-sm">{user.email}</p>
+          <div className="relative">
+            <h2 className="text-xl font-bold text-white font-display">{user.name}</h2>
+            <p className="text-white/85 text-sm">{user.email}</p>
             <span className={`inline-block mt-2 px-3 py-0.5 rounded-full text-xs font-semibold ${getRoleBadgeColor(user.role)}`}>
               {user.role}
             </span>
@@ -194,14 +210,14 @@ const Profile = () => {
               <button
                 onClick={handleSave}
                 disabled={loading}
-                className="btn-press flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-medium rounded-lg hover:from-emerald-600 hover:to-emerald-700 transition-all disabled:opacity-50"
+                className="btn-forest flex items-center gap-2 px-6 py-2.5 rounded-full font-semibold disabled:opacity-50"
               >
                 <Save className="w-4 h-4" />
                 {loading ? 'Saving...' : 'Save Changes'}
               </button>
               <button
                 onClick={handleCancel}
-                className="btn-press flex items-center gap-2 px-6 py-2.5 border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 transition-all"
+                className="btn-cream flex items-center gap-2 px-6 py-2.5 rounded-full font-semibold"
               >
                 <X className="w-4 h-4" />
                 Cancel
@@ -210,7 +226,7 @@ const Profile = () => {
           ) : (
             <button
               onClick={() => setEditing(true)}
-              className="btn-press flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white font-medium rounded-lg hover:from-indigo-700 hover:to-indigo-800 transition-all"
+              className="btn-terra flex items-center gap-2 px-6 py-2.5 rounded-full font-semibold"
             >
               <Edit3 className="w-4 h-4" />
               Edit Profile
@@ -218,6 +234,7 @@ const Profile = () => {
           )}
         </div>
       </div>
+    </div>
     </div>
   );
 };

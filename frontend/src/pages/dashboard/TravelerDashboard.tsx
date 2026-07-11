@@ -5,6 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import api from '../../lib/api';
 import StatusBadge from '../../components/StatusBadge';
 import LoadingSpinner from '../../components/LoadingSpinner';
+import { ScooterCourier, Cloud, Parcel as ParcelArt, EmptyBox } from '../../components/illustrations/WarmArt';
 
 interface AvailableJob {
   id: string;
@@ -197,11 +198,23 @@ const TravelerDashboard = () => {
   if (loading) return <LoadingSpinner />;
 
   return (
+    <div className="warm-canvas min-h-screen">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 font-[family-name:var(--font-family-heading)]">Traveler Dashboard</h1>
-        <p className="text-slate-600 mt-1">Welcome back, {user?.name}. Browse available jobs or manage your active deliveries.</p>
+      {/* Playful welcome hero */}
+      <div className="hero-gradient rounded-[32px] p-8 sm:p-10 mb-8 text-white relative overflow-hidden">
+        <div className="absolute inset-0 warm-dots opacity-25" />
+        <Cloud className="cloud-drift absolute top-6 left-10 w-20 opacity-80 hidden sm:block" />
+        <div className="relative flex items-center justify-between gap-6">
+          <div>
+            <p className="text-white/85 font-medium mb-1">✈️ Ready to roll, {user?.name?.split(' ')[0]}?</p>
+            <h1 className="text-3xl sm:text-4xl font-bold font-display mb-2 drop-shadow-sm">Earn on the routes you already travel</h1>
+            <p className="text-white/90 max-w-lg">Browse jobs heading your way and manage your active deliveries.</p>
+          </div>
+          <div className="relative hidden lg:block shrink-0">
+            <ScooterCourier className="w-64" />
+            <div className="absolute -top-2 right-2 w-12 float-soft"><ParcelArt /></div>
+          </div>
+        </div>
       </div>
 
       {error && (
@@ -384,9 +397,10 @@ const TravelerDashboard = () => {
         </div>
 
         {filteredJobs.length === 0 ? (
-          <div className="bg-white rounded-xl border border-gray-200 p-8 text-center">
-            <MapPin className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-            <p className="text-gray-500">No available jobs right now. Check back later!</p>
+          <div className="soft-card p-10 text-center flex flex-col items-center">
+            <EmptyBox className="w-40 mb-4" />
+            <p className="text-slate-600 font-medium">No jobs on your route right now</p>
+            <p className="text-slate-400 text-sm mt-1">New parcels appear here the moment they're posted — check back soon!</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -433,21 +447,23 @@ const TravelerDashboard = () => {
       </div>
 
       {/* Wallet Quick View */}
-      <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl p-5 text-white">
-        <div className="flex items-center justify-between">
+      <div className="hero-gradient rounded-[28px] p-6 text-white relative overflow-hidden">
+        <div className="absolute inset-0 warm-dots opacity-20" />
+        <div className="relative flex items-center justify-between">
           <div>
-            <p className="text-indigo-200 text-sm">Wallet Balance</p>
-            <p className="text-2xl font-bold mt-1">&#8377;{(user?.wallet_balance ?? user?.walletBalance ?? 0).toLocaleString()}</p>
+            <p className="text-white/80 text-sm">Wallet Balance</p>
+            <p className="text-3xl font-bold font-display mt-1">&#8377;{(user?.wallet_balance ?? user?.walletBalance ?? 0).toLocaleString()}</p>
           </div>
           <Link
             to="/wallet"
-            className="flex items-center gap-2 px-4 py-2 bg-white/20 rounded-lg hover:bg-white/30 transition-colors text-sm font-medium"
+            className="btn-cream flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold"
           >
             <Wallet className="w-4 h-4" />
             View Wallet
           </Link>
         </div>
       </div>
+    </div>
     </div>
   );
 };

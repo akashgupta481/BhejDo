@@ -47,15 +47,19 @@ const Notifications = () => {
   if (loading) return <LoadingSpinner />;
 
   return (
+    <div className="warm-canvas min-h-screen">
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in-up">
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 font-[family-name:var(--font-family-heading)]">
-          Notifications
-        </h1>
+        <div className="flex items-center gap-3">
+          <div className="icon-tile icon-tile-mustard w-12 h-12 flex items-center justify-center">
+            <Bell className="w-6 h-6 animate-bounce-subtle" />
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 font-display">Notifications</h1>
+        </div>
         {notifications.some((n) => !n.read) && (
           <button
             onClick={handleMarkAllRead}
-            className="flex items-center gap-2 text-sm text-indigo-600 hover:text-indigo-800 font-medium"
+            className="btn-cream flex items-center gap-2 text-sm px-4 py-2 rounded-full font-semibold"
           >
             <CheckCheck className="w-4 h-4" />
             Mark all read
@@ -64,35 +68,39 @@ const Notifications = () => {
       </div>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">{error}</div>
+        <div className="soft-card border-l-4 border-l-red-500 text-red-700 px-5 py-4 mb-6">{error}</div>
       )}
 
       {notifications.length === 0 ? (
-        <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
-          <Bell className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-          <p className="text-gray-500">No notifications yet.</p>
+        <div className="soft-card p-12 text-center flex flex-col items-center">
+          <div className="icon-tile icon-tile-mustard w-16 h-16 flex items-center justify-center mb-4">
+            <Bell className="w-8 h-8" />
+          </div>
+          <p className="text-slate-600 font-medium">No notifications yet</p>
+          <p className="text-slate-400 text-sm mt-1">We'll ping you the moment something happens. 🔔</p>
         </div>
       ) : (
         <div className="space-y-3">
           {notifications.map((notification) => (
             <div
               key={notification.id}
-              className={`bg-white rounded-xl border p-4 transition-colors ${
-                notification.read ? 'border-gray-100' : 'border-indigo-200 bg-indigo-50/30'
-              }`}
+              className={`soft-card p-4 ${notification.read ? '' : 'ring-2 ring-primary-200'}`}
             >
               <div className="flex items-start justify-between gap-3">
-                <div className="flex-1">
-                  <p className="font-medium text-slate-900 text-sm">{notification.title}</p>
-                  <p className="text-slate-600 text-sm mt-1">{notification.message}</p>
-                  <p className="text-xs text-slate-400 mt-2">
-                    {new Date(notification.created_at || notification.createdAt || '').toLocaleString()}
-                  </p>
+                <div className="flex items-start gap-3 flex-1">
+                  <span className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${notification.read ? 'bg-slate-200' : 'bg-primary-500'}`} />
+                  <div className="flex-1">
+                    <p className="font-semibold text-slate-900 text-sm">{notification.title}</p>
+                    <p className="text-slate-600 text-sm mt-1">{notification.message}</p>
+                    <p className="text-xs text-slate-400 mt-2">
+                      {new Date(notification.created_at || notification.createdAt || '').toLocaleString()}
+                    </p>
+                  </div>
                 </div>
                 {!notification.read && (
                   <button
                     onClick={() => handleMarkRead(notification.id)}
-                    className="flex-shrink-0 text-indigo-600 hover:text-indigo-800 p-1"
+                    className="flex-shrink-0 text-primary-600 hover:text-primary-800 p-1"
                     title="Mark as read"
                   >
                     <Check className="w-4 h-4" />
@@ -103,6 +111,7 @@ const Notifications = () => {
           ))}
         </div>
       )}
+    </div>
     </div>
   );
 };

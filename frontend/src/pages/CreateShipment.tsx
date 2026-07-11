@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MapPin, User, Package, Shield, ClipboardCheck, ArrowLeft, ArrowRight, Upload, Check } from 'lucide-react';
 import api from '../lib/api';
+import { Parcel as ParcelArt, Cloud } from '../components/illustrations/WarmArt';
 
 interface ShipmentForm {
   pickupCity: string;
@@ -151,8 +152,19 @@ const CreateShipment = () => {
   const price = estimatedPrice();
 
   return (
+    <div className="warm-canvas min-h-screen">
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in-up">
-      <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-8 font-[family-name:var(--font-family-heading)]">Create New Shipment</h1>
+      {/* Friendly header with helper */}
+      <div className="hero-gradient rounded-[28px] p-6 sm:p-8 mb-8 text-white relative overflow-hidden flex items-center justify-between gap-4">
+        <div className="absolute inset-0 warm-dots opacity-20" />
+        <Cloud className="cloud-drift absolute top-3 left-40 w-16 opacity-70 hidden sm:block" />
+        <div className="relative">
+          <p className="text-white/85 font-medium mb-1">Let's pack it up 📦</p>
+          <h1 className="text-2xl sm:text-3xl font-bold font-display drop-shadow-sm">Create a new shipment</h1>
+          <p className="text-white/90 text-sm mt-1">A few quick steps and your parcel is on its way.</p>
+        </div>
+        <div className="relative w-16 shrink-0 bob-parcel hidden sm:block"><ParcelArt /></div>
+      </div>
 
       {/* Progress Bar */}
       <div className="mb-10">
@@ -191,7 +203,7 @@ const CreateShipment = () => {
       )}
 
       {/* Step Content */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8 mb-6">
+      <div className="soft-card p-6 sm:p-8 mb-6">
         {/* Step 1: Pickup */}
         {currentStep === 0 && (
           <div className="space-y-5">
@@ -523,7 +535,7 @@ const CreateShipment = () => {
         {currentStep < 4 ? (
           <button
             onClick={handleNext}
-            className="btn-press flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white rounded-xl hover:from-indigo-700 hover:to-indigo-800 transition-all font-medium shadow-md shadow-indigo-200/50"
+            className="btn-terra flex items-center gap-2 px-7 py-3 rounded-full font-semibold"
           >
             Next
             <ArrowRight className="w-4 h-4" />
@@ -532,13 +544,14 @@ const CreateShipment = () => {
           <button
             onClick={handleSubmit}
             disabled={loading}
-            className="btn-press flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-xl hover:from-emerald-600 hover:to-emerald-700 transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-emerald-200/50"
+            className="btn-forest flex items-center gap-2 px-8 py-3 rounded-full font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? 'Creating...' : 'Confirm & Create Shipment'}
             {!loading && <Check className="w-4 h-4" />}
           </button>
         )}
       </div>
+    </div>
     </div>
   );
 };

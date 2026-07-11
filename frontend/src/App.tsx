@@ -21,10 +21,11 @@ import Messages from './pages/Messages';
 function AppLayout() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith('/admin');
+  const isLandingRoute = location.pathname === '/';
 
   return (
     <div className="min-h-screen bg-slate-50">
-      {!isAdminRoute && <Navbar />}
+      {!isAdminRoute && !isLandingRoute && <Navbar />}
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />

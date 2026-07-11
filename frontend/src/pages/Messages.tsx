@@ -131,9 +131,10 @@ export default function Messages() {
   const totalUnread = conversations.reduce((sum, c) => sum + c.unreadCount, 0);
 
   return (
+    <div className="warm-canvas min-h-screen">
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="mb-6">
-        <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 font-[family-name:var(--font-family-heading)]">
+        <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 font-display">
           Messages
         </h1>
         <p className="text-slate-600 mt-1">
@@ -146,7 +147,7 @@ export default function Messages() {
         </p>
       </div>
 
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden" style={{ height: '70vh' }}>
+      <div className="soft-card shadow-sm overflow-hidden" style={{ height: '70vh' }}>
         <div className="flex h-full">
           {/* Conversation List */}
           <div className={`w-full md:w-1/3 border-r border-gray-200 flex flex-col ${activeConversation ? 'hidden md:flex' : 'flex'}`}>
@@ -297,6 +298,7 @@ export default function Messages() {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 }

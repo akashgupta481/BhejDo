@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import api from '../../lib/api';
 import StatusBadge from '../../components/StatusBadge';
 import LoadingSpinner from '../../components/LoadingSpinner';
+import { Truck as TruckArt, Cloud } from '../../components/illustrations/WarmArt';
 
 interface AssignmentCard {
   id: string;
@@ -201,25 +202,25 @@ const AgentDashboard = () => {
   if (loading) return <LoadingSpinner />;
 
   return (
+    <div className="warm-canvas min-h-screen">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 font-[family-name:var(--font-family-heading)]">Agent Dashboard</h1>
-          <p className="text-slate-600 mt-1">Welcome, {user?.name}. Manage pickups and deliveries in {user?.city || 'your city'}.</p>
-        </div>
-        <div className="flex gap-2 flex-wrap">
-          <div className="bg-gradient-to-r from-indigo-50 to-indigo-100 text-indigo-700 px-4 py-2 rounded-full font-semibold text-sm ring-1 ring-indigo-200">
-            {pendingPickups.length} Pickups
-          </div>
-          <div className="bg-gradient-to-r from-orange-50 to-orange-100 text-orange-700 px-4 py-2 rounded-full font-semibold text-sm ring-1 ring-orange-200">
-            {pendingDeliveries.length} Deliveries
-          </div>
-          {availableInCity.length > 0 && (
-            <div className="bg-gradient-to-r from-purple-50 to-purple-100 text-purple-700 px-4 py-2 rounded-full font-semibold text-sm ring-1 ring-purple-200">
-              {availableInCity.length} Available
+      {/* Playful welcome hero */}
+      <div className="hero-gradient rounded-[32px] p-8 sm:p-10 mb-8 text-white relative overflow-hidden">
+        <div className="absolute inset-0 warm-dots opacity-25" />
+        <Cloud className="cloud-drift absolute top-6 right-40 w-20 opacity-80 hidden md:block" />
+        <div className="relative flex items-center justify-between gap-6">
+          <div>
+            <p className="text-white/85 font-medium mb-1">📦 Hello, {user?.name?.split(' ')[0]}!</p>
+            <h1 className="text-3xl sm:text-4xl font-bold font-display mb-2 drop-shadow-sm">Pickups & deliveries in {user?.city || 'your city'}</h1>
+            <div className="flex gap-2 flex-wrap mt-4">
+              <span className="warm-glass text-slate-700 px-4 py-1.5 rounded-full font-semibold text-sm">{pendingPickups.length} Pickups</span>
+              <span className="warm-glass text-slate-700 px-4 py-1.5 rounded-full font-semibold text-sm">{pendingDeliveries.length} Deliveries</span>
+              {availableInCity.length > 0 && (
+                <span className="warm-glass text-slate-700 px-4 py-1.5 rounded-full font-semibold text-sm">{availableInCity.length} Available</span>
+              )}
             </div>
-          )}
+          </div>
+          <div className="hidden lg:block shrink-0 truck-roll"><TruckArt className="w-56" /></div>
         </div>
       </div>
 
@@ -238,63 +239,25 @@ const AgentDashboard = () => {
       )}
 
       {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-8">
-        <div className="bg-white rounded-xl border border-gray-100 p-5 card-hover">
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <div className="absolute inset-0 bg-blue-200/50 rounded-xl blur-md"></div>
-              <div className="relative p-2.5 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl">
-                <Clock className="w-5 h-5 text-blue-600" />
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+        {[
+          { icon: Clock, tile: 'icon-tile-terra', label: 'Pending Pickups', value: pendingPickups.length },
+          { icon: Truck, tile: 'icon-tile-mustard', label: 'Pending Deliveries', value: pendingDeliveries.length },
+          { icon: Hand, tile: 'icon-tile-olive', label: 'Available', value: availableInCity.length },
+          { icon: CheckCircle, tile: 'icon-tile-forest', label: 'Completed', value: completedJobs.length },
+        ].map((s) => (
+          <div key={s.label} className="soft-card p-5 group">
+            <div className="flex items-center gap-3">
+              <div className={`icon-tile ${s.tile} p-2.5 group-hover:-rotate-3 transition-transform`}>
+                <s.icon className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="text-sm text-slate-500">{s.label}</p>
+                <p className="text-2xl font-bold text-slate-900 font-display">{s.value}</p>
               </div>
             </div>
-            <div>
-              <p className="text-sm text-slate-500">Pending Pickups</p>
-              <p className="text-2xl font-bold text-slate-900 font-[family-name:var(--font-family-heading)]">{pendingPickups.length}</p>
-            </div>
           </div>
-        </div>
-        <div className="bg-white rounded-xl border border-gray-100 p-5 card-hover">
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <div className="absolute inset-0 bg-orange-200/50 rounded-xl blur-md"></div>
-              <div className="relative p-2.5 bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl">
-                <Truck className="w-5 h-5 text-orange-600" />
-              </div>
-            </div>
-            <div>
-              <p className="text-sm text-slate-500">Pending Deliveries</p>
-              <p className="text-2xl font-bold text-slate-900 font-[family-name:var(--font-family-heading)]">{pendingDeliveries.length}</p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white rounded-xl border border-gray-100 p-5 card-hover">
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <div className="absolute inset-0 bg-purple-200/50 rounded-xl blur-md"></div>
-              <div className="relative p-2.5 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl">
-                <Hand className="w-5 h-5 text-purple-600" />
-              </div>
-            </div>
-            <div>
-              <p className="text-sm text-slate-500">Available</p>
-              <p className="text-2xl font-bold text-slate-900 font-[family-name:var(--font-family-heading)]">{availableInCity.length}</p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white rounded-xl border border-gray-100 p-5 card-hover">
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <div className="absolute inset-0 bg-emerald-200/50 rounded-xl blur-md"></div>
-              <div className="relative p-2.5 bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl">
-                <CheckCircle className="w-5 h-5 text-emerald-600" />
-              </div>
-            </div>
-            <div>
-              <p className="text-sm text-slate-500">Completed</p>
-              <p className="text-2xl font-bold text-slate-900 font-[family-name:var(--font-family-heading)]">{completedJobs.length}</p>
-            </div>
-          </div>
-        </div>
+        ))}
       </div>
 
       {/* Available in Your City — Unclaimed orders to claim */}
@@ -570,6 +533,7 @@ const AgentDashboard = () => {
           </div>
         )}
       </div>
+    </div>
     </div>
   );
 };

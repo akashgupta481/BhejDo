@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { BhejDoLogo } from '../components/icons/BhejDoLogo';
+import { ScooterCourier, Parcel, Cloud, Pin } from '../components/illustrations/WarmArt';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -71,55 +72,51 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex">
-      {/* Left Panel - Brand */}
+    <div className="min-h-screen flex warm-canvas">
+      {/* Left Panel - Brand illustration */}
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden hero-gradient">
-        <div className="absolute inset-0">
-          <div className="absolute -top-20 -right-20 w-64 h-64 bg-white/5 rounded-full blur-2xl"></div>
-          <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-orange-500/10 rounded-full blur-3xl"></div>
-        </div>
-        <div className="relative flex flex-col items-center justify-center w-full px-12">
-          <div className="animate-float mb-8">
-            <BhejDoLogo className="w-20 h-20" />
+        <div className="absolute inset-0 warm-dots opacity-30"></div>
+        <Cloud className="cloud-drift absolute top-16 left-10 w-28 opacity-90" />
+        <Cloud className="cloud-drift d-2 absolute top-32 right-16 w-20 opacity-80" />
+        <div className="relative flex flex-col items-center justify-center w-full px-12 text-center">
+          <div className="flex items-center gap-2 mb-8">
+            <BhejDoLogo className="w-12 h-12" />
+            <span className="text-3xl font-bold font-display text-white">BhejDo</span>
           </div>
-          <h2 className="text-3xl font-bold text-white mb-4 text-center font-[family-name:var(--font-family-heading)]">
-            Welcome to BhejDo
-          </h2>
-          <p className="text-indigo-100 text-center text-lg max-w-md leading-relaxed">
-            Send parcels with travelers going your way. Faster, cheaper, and community-driven logistics.
+          <div className="relative w-full max-w-md">
+            <ScooterCourier className="w-full drop-shadow-xl" />
+            <div className="absolute -top-2 right-8 w-16 float-soft"><Parcel /></div>
+            <div className="absolute bottom-0 -left-1 w-12 float-soft2 d-2"><Parcel face={false} /></div>
+            <div className="absolute -bottom-3 right-16 w-12"><Pin color="#FFFFFF" /></div>
+          </div>
+          <h2 className="text-3xl font-bold font-display text-white mt-8 mb-3 drop-shadow">Welcome back!</h2>
+          <p className="text-white/90 text-lg max-w-sm leading-relaxed">
+            Your parcels missed you. Sign in and let's get them moving across India.
           </p>
-
-          {/* Decorative elements */}
-          <div className="mt-16 grid grid-cols-3 gap-6 text-center">
-            <div>
-              <p className="text-2xl font-bold text-white">10K+</p>
-              <p className="text-indigo-200 text-sm">Deliveries</p>
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-white">5K+</p>
-              <p className="text-indigo-200 text-sm">Travelers</p>
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-white">50+</p>
-              <p className="text-indigo-200 text-sm">Cities</p>
-            </div>
+          <div className="mt-10 grid grid-cols-3 gap-6">
+            {[['10K+', 'Deliveries'], ['5K+', 'Travelers'], ['50+', 'Cities']].map(([v, l]) => (
+              <div key={l}>
+                <p className="text-2xl font-bold font-display text-white">{v}</p>
+                <p className="text-white/80 text-sm">{l}</p>
+              </div>
+            ))}
           </div>
         </div>
       </div>
 
       {/* Right Panel - Form */}
-      <div className="flex-1 flex items-center justify-center px-4 py-12 sm:px-6 lg:px-8 bg-slate-50">
+      <div className="flex-1 flex items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
         <div className="w-full max-w-md animate-fade-in-up">
-          <div className="bg-white shadow-xl rounded-2xl p-8 border border-slate-100">
+          <div className="soft-card p-8">
             {/* Mobile Logo */}
             <div className="flex items-center justify-center gap-2 mb-8 lg:hidden">
               <BhejDoLogo className="h-9 w-9" />
-              <span className="text-2xl font-bold gradient-text font-[family-name:var(--font-family-heading)]">BhejDo</span>
+              <span className="text-2xl font-bold gradient-text font-display">BhejDo</span>
             </div>
 
             {/* Heading */}
             <div className="text-center lg:text-left mb-8">
-              <h1 className="text-2xl font-bold text-slate-900 font-[family-name:var(--font-family-heading)]">Welcome back</h1>
+              <h1 className="text-3xl font-bold text-slate-900 font-display">Welcome back 👋</h1>
               <p className="mt-2 text-sm text-slate-500">Sign in to your account to continue</p>
             </div>
 
@@ -195,7 +192,7 @@ export default function Login() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="btn-press w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-200/50 hover:from-indigo-700 hover:to-indigo-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed transition-all"
+                className="btn-terra w-full flex items-center justify-center gap-2 rounded-2xl px-4 py-3.5 text-base font-semibold disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 {isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
                 {isSubmitting ? 'Signing in...' : 'Sign in'}

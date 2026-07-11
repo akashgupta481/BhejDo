@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Loader2, Check, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { BhejDoLogo } from '../components/icons/BhejDoLogo';
+import { HappyCustomer, Parcel, Cloud } from '../components/illustrations/WarmArt';
 import type { UserRole } from '../types';
 
 type SignupRole = Exclude<UserRole, 'ADMIN'>;
@@ -170,71 +171,61 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-screen flex">
-      {/* Left Panel - Brand */}
-      <div className="hidden lg:flex lg:w-5/12 relative overflow-hidden bg-gradient-to-br from-indigo-600 via-indigo-700 to-purple-800">
-        <div className="absolute inset-0">
-          <div className="absolute -top-20 -right-20 w-64 h-64 bg-white/5 rounded-full blur-2xl"></div>
-          <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-orange-500/10 rounded-full blur-3xl"></div>
-          <div className="absolute top-1/3 right-10 w-3 h-3 bg-orange-300/30 rounded-full animate-float"></div>
-          <div className="absolute bottom-1/4 left-10 w-2 h-2 bg-white/30 rounded-full animate-float animation-delay-300"></div>
-        </div>
-        <div className="relative flex flex-col items-center justify-center w-full px-12">
-          <div className="animate-float mb-8">
-            <BhejDoLogo className="w-20 h-20" />
+    <div className="min-h-screen flex warm-canvas">
+      {/* Left Panel - Brand illustration */}
+      <div className="hidden lg:flex lg:w-5/12 relative overflow-hidden hero-gradient">
+        <div className="absolute inset-0 warm-dots opacity-30"></div>
+        <Cloud className="cloud-drift absolute top-16 right-12 w-24 opacity-90" />
+        <Cloud className="cloud-drift d-2 absolute top-36 left-10 w-16 opacity-80" />
+        <div className="relative flex flex-col items-center justify-center w-full px-12 text-center">
+          <div className="flex items-center gap-2 mb-6">
+            <BhejDoLogo className="w-11 h-11" />
+            <span className="text-3xl font-bold font-display text-white">BhejDo</span>
           </div>
-          <h2 className="text-3xl font-bold text-white mb-4 text-center font-[family-name:var(--font-family-heading)]">
-            Join BhejDo Today
+          <div className="relative">
+            <HappyCustomer className="w-52 drop-shadow-xl" />
+            <div className="absolute top-2 -right-4 w-14 float-soft"><Parcel /></div>
+          </div>
+          <h2 className="text-3xl font-bold font-display text-white mt-6 mb-3 drop-shadow">
+            Join the journey
           </h2>
-          <p className="text-indigo-100 text-center text-lg max-w-sm leading-relaxed">
-            Whether you're sending or traveling, become part of India's fastest-growing peer-to-peer delivery network.
+          <p className="text-white/90 text-center text-lg max-w-sm leading-relaxed">
+            Whether you're sending or travelling, become part of India's friendliest delivery network.
           </p>
 
-          <div className="mt-12 space-y-4 w-full max-w-xs">
-            <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-xl p-4">
-              <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                <Check className="w-5 h-5 text-emerald-300" />
+          <div className="mt-10 space-y-3 w-full max-w-xs">
+            {[
+              ['Verified community', 'All users are ID-verified'],
+              ['Save up to 60%', 'Cheaper than couriers'],
+              ['Secure OTP handoffs', 'End-to-end verification'],
+            ].map(([t, s]) => (
+              <div key={t} className="flex items-center gap-3 warm-glass rounded-2xl p-3.5 text-left">
+                <div className="w-9 h-9 rounded-full bg-white/70 flex items-center justify-center shrink-0">
+                  <Check className="w-5 h-5 text-primary-600" />
+                </div>
+                <div>
+                  <p className="text-slate-800 text-sm font-semibold">{t}</p>
+                  <p className="text-slate-500 text-xs">{s}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-white text-sm font-medium">Verified Community</p>
-                <p className="text-indigo-200 text-xs">All users are ID-verified</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-xl p-4">
-              <div className="w-10 h-10 rounded-full bg-orange-500/20 flex items-center justify-center">
-                <Check className="w-5 h-5 text-orange-300" />
-              </div>
-              <div>
-                <p className="text-white text-sm font-medium">Save Up to 60%</p>
-                <p className="text-indigo-200 text-xs">Cheaper than couriers</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-xl p-4">
-              <div className="w-10 h-10 rounded-full bg-indigo-300/20 flex items-center justify-center">
-                <Check className="w-5 h-5 text-indigo-200" />
-              </div>
-              <div>
-                <p className="text-white text-sm font-medium">Secure OTP Handoffs</p>
-                <p className="text-indigo-200 text-xs">End-to-end verification</p>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>
 
       {/* Right Panel - Form */}
-      <div className="flex-1 flex items-center justify-center px-4 py-8 sm:px-6 lg:px-8 bg-slate-50 overflow-y-auto">
+      <div className="flex-1 flex items-center justify-center px-4 py-8 sm:px-6 lg:px-8 overflow-y-auto">
         <div className="w-full max-w-lg animate-fade-in-up">
-          <div className="bg-white shadow-xl rounded-2xl p-6 sm:p-8 border border-slate-100">
+          <div className="soft-card p-6 sm:p-8">
             {/* Mobile Logo */}
             <div className="flex items-center justify-center gap-2 mb-6 lg:hidden">
               <BhejDoLogo className="h-9 w-9" />
-              <span className="text-2xl font-bold gradient-text font-[family-name:var(--font-family-heading)]">BhejDo</span>
+              <span className="text-2xl font-bold gradient-text font-display">BhejDo</span>
             </div>
 
             {/* Heading */}
             <div className="text-center lg:text-left mb-6">
-              <h1 className="text-2xl font-bold text-slate-900 font-[family-name:var(--font-family-heading)]">Create your account</h1>
+              <h1 className="text-3xl font-bold text-slate-900 font-display">Create your account</h1>
               <p className="mt-1 text-sm text-slate-500">Get started in under 2 minutes</p>
             </div>
 
@@ -471,7 +462,7 @@ export default function Signup() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="btn-press w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 px-4 py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-200/50 hover:from-indigo-700 hover:to-indigo-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed transition-all mt-6"
+                className="btn-terra w-full flex items-center justify-center gap-2 rounded-2xl px-4 py-3.5 text-base font-semibold disabled:opacity-60 disabled:cursor-not-allowed mt-6"
               >
                 {isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
                 {isSubmitting ? 'Creating account...' : 'Create account'}

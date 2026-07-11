@@ -160,7 +160,7 @@ export default function Wallet() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+      <div className="min-h-screen warm-canvas flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="w-10 h-10 text-indigo-600 animate-spin mx-auto mb-3" />
           <p className="text-gray-500">Loading wallet...</p>
@@ -171,7 +171,7 @@ export default function Wallet() {
 
   if (error && !wallet) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+      <div className="min-h-screen warm-canvas flex items-center justify-center">
         <div className="text-center">
           <AlertCircle className="w-12 h-12 text-red-400 mx-auto mb-3" />
           <p className="text-gray-700 font-medium">{error}</p>
@@ -191,26 +191,32 @@ export default function Wallet() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen warm-canvas">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Balance Card */}
-        <div className="hero-gradient rounded-2xl p-8 text-white shadow-xl mb-8 relative overflow-hidden">
-          <div className="absolute inset-0">
-            <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/5 rounded-full blur-2xl"></div>
-            <div className="absolute -bottom-5 -left-5 w-32 h-32 bg-orange-500/10 rounded-full blur-xl"></div>
+        <div className="hero-gradient rounded-[32px] p-8 text-white shadow-xl mb-8 relative overflow-hidden">
+          <div className="absolute inset-0 warm-dots opacity-25"></div>
+          {/* floating coins & gift */}
+          <div className="absolute top-6 right-8 flex items-end gap-3">
+            <div className="w-12 h-12 rounded-full bg-secondary-300 border-4 border-secondary-200 flex items-center justify-center float-soft shadow-lg">
+              <IndianRupee className="w-5 h-5 text-secondary-800" />
+            </div>
+            <div className="w-14 h-14 rounded-2xl bg-white/90 flex items-center justify-center float-soft2 d-2 shadow-lg">
+              <Gift className="w-7 h-7 text-primary-500" />
+            </div>
           </div>
           <div className="relative">
             <div className="flex items-center gap-3 mb-2">
-              <WalletIcon className="w-6 h-6 text-white/70" />
-              <span className="text-white/80 text-sm font-medium">Available Balance</span>
+              <WalletIcon className="w-6 h-6 text-white/80" />
+              <span className="text-white/85 text-sm font-medium">Available Balance</span>
             </div>
             <div className="flex items-baseline gap-1">
               <IndianRupee className="w-8 h-8" />
-              <span className="text-4xl sm:text-5xl font-bold font-[family-name:var(--font-family-heading)]">
+              <span className="text-4xl sm:text-5xl font-bold font-display">
                 {wallet?.balance.toLocaleString('en-IN') || '0'}
               </span>
             </div>
-            <p className="text-white/60 text-sm mt-2">Updated just now</p>
+            <p className="text-white/70 text-sm mt-2">Updated just now</p>
           </div>
         </div>
 
@@ -242,7 +248,7 @@ export default function Wallet() {
         {/* Earnings Summary */}
         {wallet?.earnings && (
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+            <div className="soft-card p-5">
               <p className="text-sm text-gray-500 mb-1">This Month</p>
               <div className="flex items-baseline gap-1">
                 <IndianRupee className="w-4 h-4 text-gray-700" />
@@ -251,7 +257,7 @@ export default function Wallet() {
                 </span>
               </div>
             </div>
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+            <div className="soft-card p-5">
               <p className="text-sm text-gray-500 mb-1">Last Month</p>
               <div className="flex items-baseline gap-1">
                 <IndianRupee className="w-4 h-4 text-gray-700" />
@@ -260,7 +266,7 @@ export default function Wallet() {
                 </span>
               </div>
             </div>
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+            <div className="soft-card p-5">
               <p className="text-sm text-gray-500 mb-1">All Time</p>
               <div className="flex items-baseline gap-1">
                 <IndianRupee className="w-4 h-4 text-gray-700" />
@@ -273,7 +279,7 @@ export default function Wallet() {
         )}
 
         {/* Reward Credits Section */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-8">
+        <div className="soft-card p-6 mb-8">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
@@ -300,7 +306,7 @@ export default function Wallet() {
         </div>
 
         {/* Transaction History */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="soft-card overflow-hidden">
           <div className="p-6 border-b border-gray-100">
             <h3 className="text-lg font-semibold text-gray-800 mb-4">Transaction History</h3>
             <div className="flex gap-2 flex-wrap">

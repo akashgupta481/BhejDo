@@ -174,7 +174,7 @@ export default function AdminPanel() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex">
+    <div className="min-h-screen warm-canvas flex">
       {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
         <div
