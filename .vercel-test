@@ -1,0 +1,8 @@
+# Vercel Auto-Deploy Test
+
+This file is created to test if Vercel auto-deploy is disabled.
+
+If you see a Vercel deployment triggered by this commit, the auto-deploy is still active.
+If no deployment is triggered, the configuration worked! ✅
+
+Timestamp: 2026-07-11 15:59 IST
