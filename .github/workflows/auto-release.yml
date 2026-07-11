@@ -1,4 +1,4 @@
-name: Auto Release
+name: Create Release PR
 
 on:
   pull_request:
@@ -7,11 +7,16 @@ on:
       - main
 
 jobs:
-  release:
-    if: github.event.pull_request.merged == true
+  create-release-pr:
+    # Only run if PR was merged and not a release or deploy PR
+    if: |
+      github.event.pull_request.merged == true &&
+      !startsWith(github.event.pull_request.head.ref, 'release/') &&
+      !startsWith(github.event.pull_request.head.ref, 'deploy/')
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: write
       
     steps:
       - name: Checkout code
@@ -52,8 +57,8 @@ jobs:
             echo "type=patch" >> $GITHUB_OUTPUT
           fi
 
-      - name: Bump version
-        id: bump_version
+      - name: Calculate new version
+        id: new_version
         run: |
           CURRENT_VERSION="${{ steps.current_version.outputs.version }}"
           BUMP_TYPE="${{ steps.bump_type.outputs.type }}"
@@ -75,55 +80,74 @@ jobs:
           fi
           
           NEW_VERSION="$MAJOR.$MINOR.$PATCH"
-          echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
           echo "New version will be: $NEW_VERSION (bump type: $BUMP_TYPE)"
 
-      - name: Update package.json version
+      - name: Create release branch
         run: |
-          NEW_VERSION="${{ steps.bump_version.outputs.new_version }}"
+          NEW_VERSION="${{ steps.new_version.outputs.version }}"
+          git checkout -b release/v$NEW_VERSION
+          
+          # Update version in package.json
           npm version $NEW_VERSION --no-git-tag-version
+          
           git add package.json package-lock.json
-          git commit -m "chore: bump version to $NEW_VERSION [skip ci]"
-          git push origin main
+          git commit -m "chore: bump version to $NEW_VERSION"
+          git push origin release/v$NEW_VERSION
 
-      - name: Create Git tag
+      - name: Generate changelog
+        id: changelog
         run: |
-          NEW_VERSION="${{ steps.bump_version.outputs.new_version }}"
-          git tag -a "v$NEW_VERSION" -m "Release v$NEW_VERSION"
-          git push origin "v$NEW_VERSION"
-
-      - name: Generate Release Notes
-        id: release_notes
-        run: |
-          NEW_VERSION="${{ steps.bump_version.outputs.new_version }}"
-          PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+          NEW_VERSION="${{ steps.new_version.outputs.version }}"
+          PREV_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
           
           if [ -z "$PREV_TAG" ]; then
-            CHANGES=$(git log --pretty=format:"- %s (%h)" --reverse)
+            CHANGES=$(git log --pretty=format:"- %s (%h)" --reverse main)
           else
-            CHANGES=$(git log $PREV_TAG..HEAD --pretty=format:"- %s (%h)" --reverse)
+            CHANGES=$(git log $PREV_TAG..main --pretty=format:"- %s (%h)" --reverse)
           fi
           
-          cat > release_notes.md << EOF
-          ## What's Changed
+          echo "changes<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create Release PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          NEW_VERSION="${{ steps.new_version.outputs.version }}"
+          BUMP_TYPE="${{ steps.bump_type.outputs.type }}"
           
-          $CHANGES
+          cat > pr_body.md << 'EOF'
+          ## 🚀 Release v${{ steps.new_version.outputs.version }}
           
-          ### Pull Request
-          - #${{ github.event.pull_request.number }}: ${{ github.event.pull_request.title }}
+          **Version Bump**: ${{ steps.bump_type.outputs.type }} (${{ steps.current_version.outputs.version }} → ${{ steps.new_version.outputs.version }})
           
-          **Full Changelog**: https://github.com/${{ github.repository }}/compare/$PREV_TAG...v$NEW_VERSION
+          ### 📋 Changes
+          
+          ${{ steps.changelog.outputs.changes }}
+          
+          ### ✅ What happens when you merge this PR:
+          
+          1. Version tag `v${{ steps.new_version.outputs.version }}` will be created
+          2. GitHub Release will be published
+          3. A **Deploy PR** will be automatically created
+          4. You can then merge the Deploy PR to push to production
+          
+          ### 🔍 Review Checklist:
+          
+          - [ ] Version number is correct
+          - [ ] Changelog includes all changes
+          - [ ] Ready for release
+          
+          ---
+          
+          **Merged PR**: #${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}
           EOF
           
-          echo "Release notes generated"
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: v${{ steps.bump_version.outputs.new_version }}
-          name: Release v${{ steps.bump_version.outputs.new_version }}
-          body_path: release_notes.md
-          draft: false
-          prerelease: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          gh pr create \
+            --title "Release v$NEW_VERSION" \
+            --body-file pr_body.md \
+            --base main \
+            --head release/v$NEW_VERSION \
+            --label "release"
