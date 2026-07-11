@@ -52,7 +52,7 @@ jobs:
           # Check for features or minor keywords
           elif [[ "${PR_TITLE}" == *"feat"* ]] || [[ "${PR_TITLE}" == *"feature"* ]] || [[ "${PR_LABELS}" == *"feature"* ]] || [[ "${PR_LABELS}" == *"enhancement"* ]] || [[ "${PR_LABELS}" == *"minor"* ]]; then
             echo "type=minor" >> $GITHUB_OUTPUT
-          # Default to patch for fixes, docs, chores
+          # Patch for fixes, docs, chores, and everything else
           else
             echo "type=patch" >> $GITHUB_OUTPUT
           fi

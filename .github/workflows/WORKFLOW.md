@@ -3,7 +3,7 @@
 ## Complete Flow Diagram
 
 ```
-Feature PR Merge
+Feature/Fix PR Merge
        ↓
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  STEP 1: auto-release.yml triggers
@@ -48,7 +48,7 @@ Deploy PR Merge
 ## Workflow Details
 
 ### 1. auto-release.yml - Create Release PR
-**Trigger**: PR merged to `main` (excludes release/* and deploy/* branches)
+**Trigger**: Any PR merged to `main` (excludes release/* and deploy/* branches)
 
 **Actions**:
 1. Determines version bump type (major/minor/patch) based on:
@@ -93,7 +93,7 @@ Deploy PR Merge
 ## Critical Flow Rules
 
 ### ✅ What triggers workflows:
-1. **Feature/Fix PR merge** → Triggers Release PR creation
+1. **Any PR merge to main** (feat, fix, chore, docs, etc.) → Triggers Release PR creation
 2. **Release PR merge** → Triggers Deploy PR creation + GitHub Release
 3. **Deploy PR merge** → Triggers Production deployment
 
@@ -136,7 +136,7 @@ See `.github/workflows/SETUP.md` for setup instructions.
 
 ## Example Flow
 
-### Scenario: Merging a new feature
+### Scenario 1: Merging a new feature
 
 1. **Developer merges feature PR**:
    ```
@@ -171,6 +171,24 @@ See `.github/workflows/SETUP.md` for setup instructions.
    - Comments deployment URL
 
 7. **🚀 Version 1.3.0 is now LIVE**
+
+### Scenario 2: Merging a bug fix
+
+1. **Developer merges fix PR**:
+   ```
+   PR #45: fix: Resolve payment validation error
+   Branch: fix/payment-validation → main
+   ```
+
+2. **Auto-release workflow runs**:
+   - Detects "fix:" in title → Patch bump
+   - Current version: 1.3.0 → New version: 1.3.1
+   - Creates `release/v1.3.1` branch
+   - Opens Release PR #46
+
+3. **Team reviews and merges** → Deploy PR created → Deploy to production
+
+4. **🚀 Version 1.3.1 is now LIVE**
 
 ## Safety Features
 
