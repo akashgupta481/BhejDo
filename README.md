@@ -21,7 +21,6 @@ A peer-to-peer logistics platform where Senders can ship parcels through Travele
 
 ## Quick Start
 
-
 ```bash
 # Install all dependencies
 npm install
