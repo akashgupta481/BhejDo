@@ -6,10 +6,9 @@
     "silent": true
   },
   "ignoreCommand": "bash vercel-ignore-build.sh",
-  "buildCommand": "cd frontend && npm ci && npm run build",
-  "outputDirectory": "frontend/dist",
-  "installCommand": "echo 'Skipping root install'",
-  "framework": null,
+  "buildCommand": "cd frontend && npm ci && npm run build && cd .. && cp -r frontend/dist ./dist",
+  "outputDirectory": "dist",
+  "installCommand": "echo 'Dependencies installed in buildCommand'",
   "rewrites": [
     {
       "source": "/(.*)",
